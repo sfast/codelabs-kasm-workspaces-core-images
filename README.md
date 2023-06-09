@@ -11,7 +11,7 @@ sudo docker run --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password --buil
 
 The container is now accessible via a browser : `https://<IP>:6901`
 
- - **User** : `kasm_user`
+ - **User** : `dooqod`
  - **Password**: `password`
 
 

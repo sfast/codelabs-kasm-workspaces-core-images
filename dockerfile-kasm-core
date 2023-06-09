@@ -2,9 +2,9 @@ ARG BASE_IMAGE="ubuntu:20.04"
 FROM $BASE_IMAGE AS install_tools
 ARG DISTRO=ubuntu
 
-LABEL "org.opencontainers.image.authors"='Kasm Tech "info@kasmweb.com"'
-LABEL "com.kasmweb.image"="true"
-LABEL "com.kasmweb.gpu_acceleration_egl"="nvidia"
+# LABEL "org.opencontainers.image.authors"='Kasm Tech "info@kasmweb.com"'
+# LABEL "com.kasmweb.image"="true"
+# LABEL "com.kasmweb.gpu_acceleration_egl"="nvidia"
 
 ### Environment config
 ARG START_XFCE4=0
@@ -23,16 +23,17 @@ ENV DISPLAY=:1 \
     VNC_RESOLUTION=1280x720 \
     MAX_FRAME_RATE=24 \
     VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0" \
-    HOME=/home/kasm-default-profile \
+    HOME=/home/dooqod \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
     INST_SCRIPTS=/dockerstartup/install \
     KASM_VNC_PATH=/usr/share/kasmvnc \
+    KASM_USER=dooqod \
     DEBIAN_FRONTEND=noninteractive \
     VNC_COL_DEPTH=24 \
     VNC_RESOLUTION=1280x1024 \
-    VNC_PW=vncpassword \
-    VNC_VIEW_ONLY_PW=vncviewonlypassword \
+    VNC_PW="" \
+    VNC_VIEW_ONLY_PW="" \
     LD_LIBRARY_PATH=/opt/libjpeg-turbo/lib64/:/usr/local/lib/ \
     OMP_WAIT_POLICY=PASSIVE \
     GOMP_SPINCOUNT=0 \
@@ -55,12 +56,19 @@ EXPOSE $VNC_PORT \
 WORKDIR $HOME
 RUN mkdir -p $HOME/Desktop
 
+
+
 # Support NVIDIA gpus for graphics acceleration
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:/usr/lib/i386-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
-ENV NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics,compat32,utility
-COPY src/ubuntu/install/nvidia/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json
+
+# TODO::AVAR - maybe we dont need this, so commenting 
+
+# RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+#     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+# ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:/usr/lib/i386-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+# ENV NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics,compat32,utility
+# COPY src/ubuntu/install/nvidia/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json
+
+# NOTE::AVAR OK - installing same basic packages, common etc ...
 
 ### Install common tools
 COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
@@ -103,9 +111,12 @@ RUN bash $INST_SCRIPTS/audio/install_audio.sh  && rm -rf $INST_SCRIPTS/audio/
 COPY ./src/ubuntu/install/audio_input $INST_SCRIPTS/audio_input/
 RUN bash $INST_SCRIPTS/audio_input/install_audio_input.sh && rm -rf $INST_SCRIPTS/audio_input/
 
+
+# AVAR::NOTE - comenting this
+
 ### Install Gamepad Service
-COPY ./src/ubuntu/install/gamepad $INST_SCRIPTS/gamepad/
-RUN bash $INST_SCRIPTS/gamepad/install_gamepad.sh && rm -rf $INST_SCRIPTS/gamepad/
+# COPY ./src/ubuntu/install/gamepad $INST_SCRIPTS/gamepad/
+# RUN bash $INST_SCRIPTS/gamepad/install_gamepad.sh && rm -rf $INST_SCRIPTS/gamepad/
 
 ### Install custom cursors
 COPY ./src/ubuntu/install/cursors $INST_SCRIPTS/cursors/
@@ -139,11 +150,13 @@ RUN bash $INST_SCRIPTS/extra/$EXTRA_SH  && rm -rf $INST_SCRIPTS/extra/
 COPY ./src/ubuntu/install/virtualgl $INST_SCRIPTS/virtualgl/
 RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/virtualgl/
 
+# NOTE::AVAR - changed user to dooqod
+
 ### Create user and home directory for base images that don't already define it
-RUN (groupadd -g 1000 kasm-user \
-    && useradd -M -u 1000 -g 1000 kasm-user \
-    && usermod -a -G kasm-user kasm-user) ; exit 0
-ENV HOME /home/kasm-user
+RUN (groupadd -g 1000 dooqod \
+    && useradd -M -u 1000 -g 1000 dooqod \
+    && usermod -a -G dooqod dooqod) ; exit 0
+ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
@@ -171,7 +184,7 @@ RUN touch $STARTUPDIR/wm.log \
     && chown 1000:1000 $STARTUPDIR/kasmrx/Downloads \
     && chown -R root:root /usr/local/bin \
     && chown 1000:root /var/run/pulse \
-    && rm -Rf /home/kasm-default-profile/.launchpadlib
+    && rm -Rf /home/dooqod/.launchpadlib
 
 USER 1000
 

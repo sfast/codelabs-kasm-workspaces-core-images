@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-DEFAULT_PROFILE_HOME=/home/kasm-default-profile
+DEFAULT_PROFILE_HOME=/home/dooqod
 PROFILE_SYNC_DIR=/kasm_profile_sync
 
 
