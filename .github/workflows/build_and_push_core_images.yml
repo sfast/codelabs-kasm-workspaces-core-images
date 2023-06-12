@@ -50,9 +50,10 @@ jobs:
           modified_files=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
           dockerfiles=()
           for file in "${modified_files[@]}"; do
-            if [[ "$file" =~ ^A/.*\.Dockerfile$ || "$file" =~ ^B/.*\.Dockerfile$ || "$file" =~ ^C/.*\.Dockerfile$ || "$file" =~ ^D/.*\.Dockerfile$ ]]; then
-              dockerfiles+=("$file")
-            fi
+            echo "$file"
+            # if [[ "$file" =~ ^A/.*\.Dockerfile$ || "$file" =~ ^B/.*\.Dockerfile$ || "$file" =~ ^C/.*\.Dockerfile$ || "$file" =~ ^D/.*\.Dockerfile$ ]]; then
+            #   dockerfiles+=("$file")
+            # fi
           done
           echo "::set-output name=dockerfiles::${dockerfiles[@]}"
       - name: Build and push Docker images
