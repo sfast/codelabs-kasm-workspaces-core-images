@@ -22,7 +22,7 @@ ENV DISPLAY=:1 \
     AUDIO_PORT=4901 \
     VNC_RESOLUTION=1280x720 \
     MAX_FRAME_RATE=24 \
-    VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0" \
+    VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None" \
     HOME=/home/dooqod \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
@@ -115,8 +115,8 @@ RUN bash $INST_SCRIPTS/audio_input/install_audio_input.sh && rm -rf $INST_SCRIPT
 # AVAR::NOTE - comenting this
 
 ### Install Gamepad Service
-# COPY ./src/ubuntu/install/gamepad $INST_SCRIPTS/gamepad/
-# RUN bash $INST_SCRIPTS/gamepad/install_gamepad.sh && rm -rf $INST_SCRIPTS/gamepad/
+COPY ./src/ubuntu/install/gamepad $INST_SCRIPTS/gamepad/
+RUN bash $INST_SCRIPTS/gamepad/install_gamepad.sh && rm -rf $INST_SCRIPTS/gamepad/
 
 ### Install custom cursors
 COPY ./src/ubuntu/install/cursors $INST_SCRIPTS/cursors/
