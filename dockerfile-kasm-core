@@ -192,3 +192,4 @@ ENTRYPOINT ["/dockerstartup/kasm_default_profile.sh", "/dockerstartup/vnc_startu
 CMD ["--wait"]
 
 
+
