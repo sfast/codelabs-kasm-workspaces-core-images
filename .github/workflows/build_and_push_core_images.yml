@@ -1,0 +1,65 @@
+# name:  DK8 - Build and push docker image
+
+# on:
+#   push:
+#     branches:
+#       - 'dk8-develop'
+#       - 'dk8-main'
+
+# env: 
+#   DK8_DOCKERHUB_USERNAME: sfastdocker
+# jobs:
+#   configenv:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       DK8_DOCKERHUB_USERNAME: ${{ steps.setconfig.outputs.DK8_DOCKERHUB_USERNAME }}
+
+#     steps:
+#       - id: setconfig
+#         shell: bash
+#         run: |
+#           echo ${{ env.DK8_DOCKERHUB_USERNAME }}
+#           echo "DK8_DOCKERHUB_USERNAME=${{ env.DK8_DOCKERHUB_USERNAME }}" >> $GITHUB_OUTPUT
+
+#   call_docker_build_push_core_image:
+#     uses: sfast/dooqod-workflow-actions/.github/workflows/docker_build_push_image.yml@main
+#     needs: [configenv]
+#     secrets:
+#       DOCKERHUB_TOKEN: ${{ secrets.DK8_DOCKERHUB_TOKEN }}
+#     with:
+#       DOCKERHUB_USERNAME: ${{ needs.configenv.outputs.DK8_DOCKERHUB_USERNAME }}
+#       DOCKERHUB_REPO: ${{ needs.configenv.outputs.DK8_DOCKERHUB_REPO }}
+#       DOCKER_FILE_PATH: "Dockerfile"
+#       DOCKER_CONTEXT_PATH: "."
+#       runs-on: ubuntu-latest
+
+on:
+  push:
+    paths:
+      - 'dockerfile-*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Determine modified Dockerfiles
+        id: find-dockerfiles
+        run: |
+          modified_files=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
+          dockerfiles=()
+          for file in "${modified_files[@]}"; do
+            if [[ "$file" =~ ^A/.*\.Dockerfile$ || "$file" =~ ^B/.*\.Dockerfile$ || "$file" =~ ^C/.*\.Dockerfile$ || "$file" =~ ^D/.*\.Dockerfile$ ]]; then
+              dockerfiles+=("$file")
+            fi
+          done
+          echo "::set-output name=dockerfiles::${dockerfiles[@]}"
+      - name: Build and push Docker images
+        run: |
+          # docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          for file in ${{ steps.find-dockerfiles.outputs.dockerfiles }}; do
+            echo "$file"
+            # docker build -t your-image-name:latest "$file"
+            # docker push your-image-name:latest
+          done
