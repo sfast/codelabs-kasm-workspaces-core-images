@@ -33,6 +33,41 @@
 #       DOCKER_CONTEXT_PATH: "."
 #       runs-on: ubuntu-latest
 
+# on:
+#   push:
+#     paths:
+#       - 'dockerfile-*'
+
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+#       - name: Determine modified Dockerfiles
+#         id: find-dockerfiles
+#         run: |
+#           modified_files=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
+#           dockerfiles=()
+#           for file in "${modified_files[@]}"; do
+#             echo "$file"
+#             # if [[ "$file" =~ ^A/.*\.Dockerfile$ || "$file" =~ ^B/.*\.Dockerfile$ || "$file" =~ ^C/.*\.Dockerfile$ || "$file" =~ ^D/.*\.Dockerfile$ ]]; then
+#             #   dockerfiles+=("$file")
+#             # fi
+#           done
+#           echo "dockerfiles=${dockerfiles[@]}" >> $GITHUB_OUTPUT
+#       - name: Build and push Docker images
+#         run: |
+#           # docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#           for file in ${{ steps.find-dockerfiles.outputs.dockerfiles }}; do
+#             echo "$file"
+#             # docker build -t your-image-name:latest "$file"
+#             # docker push your-image-name:latest
+#           done
+
+
 on:
   push:
     paths:
@@ -49,18 +84,14 @@ jobs:
       - name: Determine modified Dockerfiles
         id: find-dockerfiles
         run: |
-          modified_files=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
+          modified_files=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'dockerfile-'))
           dockerfiles=()
           for file in "${modified_files[@]}"; do
-            echo "$file"
-            # if [[ "$file" =~ ^A/.*\.Dockerfile$ || "$file" =~ ^B/.*\.Dockerfile$ || "$file" =~ ^C/.*\.Dockerfile$ || "$file" =~ ^D/.*\.Dockerfile$ ]]; then
-            #   dockerfiles+=("$file")
-            # fi
+            dockerfiles+=("$file")
           done
-          echo "dockerfiles=${dockerfiles[@]}" >> $GITHUB_OUTPUT
+          echo "::set-output name=dockerfiles::${dockerfiles[@]}"
       - name: Build and push Docker images
         run: |
-          # docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           for file in ${{ steps.find-dockerfiles.outputs.dockerfiles }}; do
             echo "$file"
             # docker build -t your-image-name:latest "$file"
