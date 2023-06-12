@@ -57,7 +57,7 @@ jobs:
             #   dockerfiles+=("$file")
             # fi
           done
-          echo "::set-output name=dockerfiles::${dockerfiles[@]}"
+          echo "dockerfiles=${dockerfiles[@]}" >> $GITHUB_OUTPUT
       - name: Build and push Docker images
         run: |
           # docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
