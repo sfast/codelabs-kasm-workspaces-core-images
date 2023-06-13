@@ -2,7 +2,7 @@
 
 ORG_NAME=dooqod
 
-docker build \
+podman build \
     -t ${ORG_NAME}/core-ubuntu:focal \
     --build-arg START_PULSEAUDIO=1 \
     --build-arg BASE_IMAGE="ubuntu:20.04" \
@@ -10,4 +10,4 @@ docker build \
     --build-arg BG_IMG=bg_focal.png \
     -f dockerfile-kasm-core-ubuntu .
 
-# docker push ${ORG_NAME}/core-ubuntu:focal
+# podman push ${ORG_NAME}/core-ubuntu:focal
