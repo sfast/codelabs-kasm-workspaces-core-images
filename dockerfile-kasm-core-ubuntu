@@ -167,9 +167,16 @@ RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/vi
 # NOTE::AVAR - changed user to dooqod
 
 ### Create user and home directory for base images that don't already define it
+# RUN (groupadd -g 1000 dooqod \
+#     && useradd -M -u 1000 -g 1000 dooqod \
+#     && usermod -a -G dooqod,sudo dooqod) ; exit 0
+
 RUN (groupadd -g 1000 dooqod \
     && useradd -M -u 1000 -g 1000 dooqod \
-    && usermod -a -G dooqod,sudo dooqod) ; exit 0
+    && usermod -a -G sudo dooqod \
+    && echo 'dooqod ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/dooqod) ; exit 0
+
+    
 ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
