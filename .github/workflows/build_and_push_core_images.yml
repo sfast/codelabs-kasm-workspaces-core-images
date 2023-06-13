@@ -94,6 +94,6 @@ jobs:
         run: |
           for file in ${{ steps.find-dockerfiles.outputs.dockerfiles }}; do
             echo "$file"
-            # docker build -t your-image-name:latest "$file"
+            # docker build -t your-image-name:latest "$file" .
             # docker push your-image-name:latest
           done
