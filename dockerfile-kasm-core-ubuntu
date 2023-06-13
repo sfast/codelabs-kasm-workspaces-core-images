@@ -18,7 +18,7 @@ ARG LC_ALL='en_US.UTF-8'
 ARG VNC_PORT=5901
 ARG NO_VNC_PORT=8080
 ARG AUDIO_PORT=4901
-ARG VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None,TLSNone"
+ARG VNCOPTIONS='-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None'
 ARG HOME="/home/dooqod"
 ARG STARTUPDIR="/home/dooqod/.dockerstartup"
 ARG INST_SCRIPTS="/home/dooqod/.dockerstartup/install"
