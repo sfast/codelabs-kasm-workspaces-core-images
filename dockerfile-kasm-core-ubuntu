@@ -18,7 +18,7 @@ ARG LC_ALL='en_US.UTF-8'
 ARG VNC_PORT=5901
 ARG NO_VNC_PORT=8080
 ARG AUDIO_PORT=4901
-ARG VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None"
+ARG VNCOPTIONS="-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None,TLSNone"
 ARG HOME="/home/dooqod"
 ARG STARTUPDIR="/home/dooqod/.dockerstartup"
 ARG INST_SCRIPTS="/home/dooqod/.dockerstartup/install"
@@ -169,10 +169,11 @@ RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/vi
 ### Create user and home directory for base images that don't already define it
 RUN (groupadd -g 1000 dooqod \
     && useradd -M -u 1000 -g 1000 dooqod \
-    && usermod -a -G dooqod dooqod) ; exit 0
+    && usermod -a -G dooqod,sudo dooqod) ; exit 0
 ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
 
 ### FIX PERMISSIONS ## Objective is to change the owner of non-home paths to root, remove write permissions, and set execute where required
 # these files are created on container first exec, by the default user, so we have to create them since default will not have write perm
@@ -202,7 +203,7 @@ RUN touch $STARTUPDIR/wm.log \
 
 USER 1000
 
-ENTRYPOINT ["/dockerstartup/kasm_default_profile.sh", "/dockerstartup/vnc_startup.sh", "/dockerstartup/kasm_startup.sh"]
+ENTRYPOINT ["/home/dooqod/.dockerstartup/kasm_default_profile.sh", "/home/dooqod/.dockerstartup/vnc_startup.sh", "/home/dooqod/.dockerstartup/kasm_startup.sh"]
 CMD ["--wait"]
 
 
