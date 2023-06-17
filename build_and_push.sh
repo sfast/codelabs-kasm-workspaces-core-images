@@ -2,7 +2,7 @@
 
 ORG_NAME=dooqod
 
-IMAGE_NAME=desktop-ubuntu-x86-64
+IMAGE_NAME=ospod-desktop-ubuntu-x86-64
 IMAGE_TAG=focal
 BASE_IMAGE=docker.io/dooqod/ospod-ubuntu-x86-64:focal
 DOCKERFILE=dockerfile-kasm-core-ubuntu
