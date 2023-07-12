@@ -7,7 +7,7 @@ IMAGE_TAG=focal
 BASE_IMAGE=docker.io/dooqod/ospod-ubuntu-x86-64:focal
 DOCKERFILE=dockerfile-kasm-core-ubuntu
 
-podman build --no-cache --authfile="/home/admin/.docker/authfile.json" \
+podman build --no-cache --squash --force-rm --authfile="/home/admin/.docker/authfile.json" \
     -t ${ORG_NAME}/${IMAGE_NAME}:${IMAGE_TAG} \
     --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg START_XFCE4=1 \

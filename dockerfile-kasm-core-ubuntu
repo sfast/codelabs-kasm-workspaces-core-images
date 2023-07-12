@@ -36,11 +36,11 @@ FROM $BASE_IMAGE AS dbuild
 # ARG LD_LIBRARY_PATH="/opt/libjpeg-turbo/lib64/:/usr/local/lib/"
 
 # Consolidate ARG instructions with default values inline
-ARG DISTRO=ubuntu \
+ARG DISTRO="ubuntu" \
     START_XFCE4=1 \
     START_PULSEAUDIO=0 \
-    BG_IMG=bg_dooqod.jpeg \
-    EXTRA_SH=noop.sh \
+    BG_IMG="bg_dooqod.jpeg" \
+    EXTRA_SH="noop.sh" \
     LANG='en_US.UTF-8' \
     LANGUAGE='en_US:en' \
     LC_ALL='en_US.UTF-8' \
