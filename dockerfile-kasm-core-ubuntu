@@ -117,7 +117,7 @@ RUN mkdir -p $HOME/Desktop
 
 # NOTE::AVAR OK - installing same basic packages, common etc ...
 
-FROM dbuild AS dbuild1
+# FROM dbuild AS dbuild1
 
 ### Install common tools
 COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
@@ -204,7 +204,7 @@ RUN bash $INST_SCRIPTS/extra/$EXTRA_SH  && rm -rf $INST_SCRIPTS/extra/
 COPY ./src/ubuntu/install/virtualgl $INST_SCRIPTS/virtualgl/
 RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/virtualgl/
 
-FROM dbuild1 AS dbuild2
+# FROM dbuild1 AS dbuild2
 
 # NOTE::AVAR - changed user to dooqod
 
@@ -223,7 +223,7 @@ ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
-FROM dbuild2 AS dbuild3
+# FROM dbuild2 AS dbuild3
 ### FIX PERMISSIONS ## Objective is to change the owner of non-home paths to root, remove write permissions, and set execute where required
 # these files are created on container first exec, by the default user, so we have to create them since default will not have write perm
 RUN touch $STARTUPDIR/wm.log \
@@ -250,7 +250,7 @@ RUN touch $STARTUPDIR/wm.log \
     && chown 1000:root /var/run/pulse \
     && rm -Rf /home/dooqod/.launchpadlib
 
-FROM dbuild3 AS dbuild4
+# FROM dbuild3 AS dbuild4
 
 USER 1000
 
