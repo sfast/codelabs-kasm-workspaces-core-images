@@ -12,7 +12,7 @@ podman build --authfile="/home/admin/.docker/authfile.json" \
     --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg START_XFCE4=1 \
     --build-arg START_PULSEAUDIO=1 \
-    --build-arg VNC_SSL_ONLY="" \
+    --build-arg VNC_SSL_ONLY="-sslOnly" \
     --build-arg BG_IMG=bg_focal.png \
     -f ${DOCKERFILE} .
 
