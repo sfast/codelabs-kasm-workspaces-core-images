@@ -1,37 +1,68 @@
 ARG BASE_IMAGE="ubuntu:20.04"
-FROM $BASE_IMAGE AS install_tools
-ARG DISTRO=ubuntu
+# FROM $BASE_IMAGE AS install_tools
+FROM $BASE_IMAGE AS dbuild
+
 
 # LABEL "org.opencontainers.image.authors"='Dooqod Inc.'
 # LABEL "com.kasmweb.image"="true"
 # LABEL "com.kasmweb.gpu_acceleration_egl"="nvidia"
 
 ### Environment config
-ARG START_XFCE4=1
-ARG START_PULSEAUDIO=0
-ARG BG_IMG=bg_dooqod.jpeg
-ARG EXTRA_SH=noop.sh
-ARG DISTRO=ubuntu
-ARG LANG='en_US.UTF-8'
-ARG LANGUAGE='en_US:en'
-ARG LC_ALL='en_US.UTF-8'
-ARG VNC_PORT=5901
-ARG NO_VNC_PORT=8080
-ARG AUDIO_PORT=4901
-ARG VNCOPTIONS='-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None'
-ARG HOME="/home/dooqod"
-ARG STARTUPDIR="/home/dooqod/.dockerstartup"
-ARG INST_SCRIPTS="/home/dooqod/.dockerstartup/install"
-ARG KASM_USER="dooqod"
-ARG VNC_RESOLUTION="1280x1024"
-ARG VNC_PW=""
-ARG VNC_VIEW_ONLY_PW=""
-ARG VNC_SSL_ONLY=""
-ARG SHELL="/bin/bash"
-ARG VNC_COL_DEPTH=24
-ARG MAX_FRAME_RATE=24
-ARG KASM_VNC_PATH="/usr/share/kasmvnc"
-ARG LD_LIBRARY_PATH="/opt/libjpeg-turbo/lib64/:/usr/local/lib/"
+# ARG DISTRO=ubuntu
+# ARG START_XFCE4=1
+# ARG START_PULSEAUDIO=0
+# ARG BG_IMG=bg_dooqod.jpeg
+# ARG EXTRA_SH=noop.sh
+# ARG DISTRO=ubuntu
+# ARG LANG='en_US.UTF-8'
+# ARG LANGUAGE='en_US:en'
+# ARG LC_ALL='en_US.UTF-8'
+# ARG VNC_PORT=5901
+# ARG NO_VNC_PORT=8080
+# ARG AUDIO_PORT=4901
+# ARG VNCOPTIONS='-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None'
+# ARG HOME="/home/dooqod"
+# ARG STARTUPDIR="/home/dooqod/.dockerstartup"
+# ARG INST_SCRIPTS="/home/dooqod/.dockerstartup/install"
+# ARG KASM_USER="dooqod"
+# ARG VNC_RESOLUTION="1280x1024"
+# ARG VNC_PW=""
+# ARG VNC_VIEW_ONLY_PW=""
+# ARG VNC_SSL_ONLY=""
+# ARG SHELL="/bin/bash"
+# ARG VNC_COL_DEPTH=24
+# ARG MAX_FRAME_RATE=24
+# ARG KASM_VNC_PATH="/usr/share/kasmvnc"
+# ARG LD_LIBRARY_PATH="/opt/libjpeg-turbo/lib64/:/usr/local/lib/"
+
+# Consolidate ARG instructions with default values inline
+ARG DISTRO=ubuntu \
+    START_XFCE4=1 \
+    START_PULSEAUDIO=0 \
+    BG_IMG=bg_dooqod.jpeg \
+    EXTRA_SH=noop.sh \
+    LANG='en_US.UTF-8' \
+    LANGUAGE='en_US:en' \
+    LC_ALL='en_US.UTF-8' \
+    VNC_PORT=5901 \
+    NO_VNC_PORT=8080 \
+    AUDIO_PORT=4901 \
+    VNCOPTIONS='-PreferBandwidth -DynamicQualityMin=4 -DynamicQualityMax=7 -DLP_ClipDelay=0 -SecurityTypes None' \
+    HOME="/home/dooqod" \
+    STARTUPDIR="/home/dooqod/.dockerstartup" \
+    INST_SCRIPTS="/home/dooqod/.dockerstartup/install" \
+    KASM_USER="dooqod" \
+    VNC_RESOLUTION="1280x1024" \
+    VNC_PW="" \
+    VNC_VIEW_ONLY_PW="" \
+    VNC_SSL_ONLY="" \
+    SHELL="/bin/bash" \
+    VNC_COL_DEPTH=24 \
+    MAX_FRAME_RATE=24 \
+    KASM_VNC_PATH="/usr/share/kasmvnc" \
+    LD_LIBRARY_PATH="/opt/libjpeg-turbo/lib64/:/usr/local/lib/"
+
+### multistage
 ENV DISPLAY=:1 \
     VNC_PORT=$VNC_PORT \
     NO_VNC_PORT=$NO_VNC_PORT \
@@ -86,6 +117,8 @@ RUN mkdir -p $HOME/Desktop
 
 # NOTE::AVAR OK - installing same basic packages, common etc ...
 
+FROM dbuild AS dbuild1
+
 ### Install common tools
 COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
 RUN bash $INST_SCRIPTS/tools/install_tools.sh && rm -rf $INST_SCRIPTS/tools/
@@ -103,41 +136,43 @@ RUN bash $INST_SCRIPTS/xfce/install_xfce_ui.sh && rm -rf $INST_SCRIPTS/xfce/
 ADD ./src/$DISTRO/xfce/.config/ $HOME/.config/
 RUN mkdir -p /usr/share/extra/backgrounds/
 RUN mkdir -p /usr/share/extra/icons/
+
 ADD /src/common/resources/images/bg_dooqod.jpeg  /usr/share/extra/backgrounds/bg_dooqod.jpeg
 ADD /src/common/resources/images/$BG_IMG  /usr/share/extra/backgrounds/bg_default.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_ubuntu.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_default.png
 ADD /src/common/resources/images/icon_dooqod.png /usr/share/extra/icons/icon_dooqod.png
-
+### multistage
 ### Install kasm_vnc dependencies and binaries
 COPY ./src/ubuntu/install/kasm_vnc $INST_SCRIPTS/kasm_vnc/
 RUN bash $INST_SCRIPTS/kasm_vnc/install_kasm_vnc.sh && rm -rf $INST_SCRIPTS/kasm_vnc/
 COPY ./src/common/install/kasm_vnc/kasmvnc.yaml /etc/kasmvnc/
-
+### multistage
 ### Install Kasm Upload Server
 COPY ./src/ubuntu/install/kasm_upload_server $INST_SCRIPTS/kasm_upload_server/
 RUN bash $INST_SCRIPTS/kasm_upload_server/install_kasm_upload_server.sh  && rm -rf $INST_SCRIPTS/kasm_upload_server/
 
-
+### multistage
 ### Install Audio
 COPY ./src/ubuntu/install/audio $INST_SCRIPTS/audio/
 RUN bash $INST_SCRIPTS/audio/install_audio.sh  && rm -rf $INST_SCRIPTS/audio/
 
+### multistage
 ### Install Audio Input
 COPY ./src/ubuntu/install/audio_input $INST_SCRIPTS/audio_input/
 RUN bash $INST_SCRIPTS/audio_input/install_audio_input.sh && rm -rf $INST_SCRIPTS/audio_input/
 
 
 # AVAR::NOTE - comenting this
-
+### multistage
 ### Install Gamepad Service
 COPY ./src/ubuntu/install/gamepad $INST_SCRIPTS/gamepad/
 RUN bash $INST_SCRIPTS/gamepad/install_gamepad.sh && rm -rf $INST_SCRIPTS/gamepad/
-
+### multistage
 ### Install custom cursors
 COPY ./src/ubuntu/install/cursors $INST_SCRIPTS/cursors/
 RUN bash $INST_SCRIPTS/cursors/install_cursors.sh && rm -rf $INST_SCRIPTS/cursors/
-
+### multistage
 ### Install Squid
 COPY ./src/ubuntu/install/squid/install/ $INST_SCRIPTS/squid_install/
 RUN bash $INST_SCRIPTS/squid_install/install_squid.sh && rm -rf $INST_SCRIPTS/squid_install/
@@ -151,20 +186,23 @@ RUN rm -rf $INST_SCRIPTS/resources/
 
 RUN chmod +x /etc/squid/kasm_squid_adapter
 RUN chmod +x /etc/squid/start_squid.sh && chmod 4755 /etc/squid/start_squid.sh
-
+### multistage
 ### configure startup
 COPY ./src/common/scripts/kasm_hook_scripts $STARTUPDIR
 ADD ./src/common/startup_scripts $STARTUPDIR
 RUN bash $STARTUPDIR/set_user_permission.sh $STARTUPDIR $HOME && \
     echo 'source $STARTUPDIR/generate_container_user' >> $HOME/.bashrc
-
+### multistage
 ### extra configurations needed per distro variant
 COPY ./src/ubuntu/install/extra $INST_SCRIPTS/extra/
 RUN bash $INST_SCRIPTS/extra/$EXTRA_SH  && rm -rf $INST_SCRIPTS/extra/
 
 ### VirtualGL
+### multistage
 COPY ./src/ubuntu/install/virtualgl $INST_SCRIPTS/virtualgl/
 RUN bash $INST_SCRIPTS/virtualgl/install_virtualgl.sh && rm -rf $INST_SCRIPTS/virtualgl/
+
+FROM dbuild1 AS dbuild2
 
 # NOTE::AVAR - changed user to dooqod
 
@@ -183,7 +221,7 @@ ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
-
+FROM dbuild2 AS dbuild3
 ### FIX PERMISSIONS ## Objective is to change the owner of non-home paths to root, remove write permissions, and set execute where required
 # these files are created on container first exec, by the default user, so we have to create them since default will not have write perm
 RUN touch $STARTUPDIR/wm.log \
@@ -209,6 +247,8 @@ RUN touch $STARTUPDIR/wm.log \
     && chown -R root:root /usr/local/bin \
     && chown 1000:root /var/run/pulse \
     && rm -Rf /home/dooqod/.launchpadlib
+
+FROM dbuild3 AS dbuild4
 
 USER 1000
 

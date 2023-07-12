@@ -170,3 +170,6 @@ chown -R 0:0 $KASM_VNC_PATH
 chmod -R og-w $KASM_VNC_PATH
 #chown -R 1000:0 $KASM_VNC_PATH/certs
 chown -R 1000:0 $KASM_VNC_PATH/www/Downloads
+
+
+
