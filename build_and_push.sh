@@ -18,4 +18,4 @@ podman build --no-cache --authfile="/home/admin/.docker/authfile.json" \
 
 # podman push ${ORG_NAME}/ospod-ubuntu-x86-64:focal
 
-# podman push --authfile="/home/admin/.docker/authfile.json" e8409765e05f docker.io/dooqod/ospod-desktop-ubuntu-x86-64:focal
+# podman push --authfile="/home/admin/.docker/authfile.json" dooqod/ospod-desktop-ubuntu-x86-64:focal docker.io/dooqod/ospod-desktop-ubuntu-x86-64:focal
