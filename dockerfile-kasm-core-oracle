@@ -144,10 +144,13 @@ RUN bash $INST_SCRIPTS/fonts/install_custom_fonts.sh && rm -rf $INST_SCRIPTS/fon
 
 ### Install xfce UI
 COPY ./src/ubuntu/install/xfce $INST_SCRIPTS/xfce/
-RUN bash $INST_SCRIPTS/xfce/install_xfce_ui.sh && rm -rf $INST_SCRIPTS/xfce/
+RUN bash $INST_SCRIPTS/xfce/install_xfce_ui.sh
 ADD ./src/$DISTRO/xfce/.config/ $HOME/.config/
 RUN mkdir -p /usr/share/extra/backgrounds/
 RUN mkdir -p /usr/share/extra/icons/
+# This is oracle theme customization
+RUN bash $INST_SCRIPTS/xfce/customize_xfce_ui.sh
+RUN rm -rf $INST_SCRIPTS/xfce/
 
 ADD /src/common/resources/images/$BG_IMG  /usr/share/backgrounds/bg_default.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_default.png
