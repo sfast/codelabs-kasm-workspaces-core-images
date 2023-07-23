@@ -19,7 +19,7 @@
   </property>
   <property name="plugins" type="empty">
     <property name="plugin-1" type="string" value="applicationsmenu">
-    <property name="button-icon" type="string" value="/home/kasm-user/.config/xfce4/fedora-logo-icon.png"/>
+    <property name="button-icon" type="string" value="/home/dooqod/.config/xfce4/fedora-logo-icon.png"/>
     </property>
     <property name="plugin-3" type="string" value="tasklist"/>
     <property name="plugin-15" type="string" value="separator">

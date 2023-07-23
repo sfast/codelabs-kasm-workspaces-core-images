@@ -138,10 +138,10 @@ COPY ./src/ubuntu/install/extra $INST_SCRIPTS/extra/
 RUN bash $INST_SCRIPTS/extra/$EXTRA_SH  && rm -rf $INST_SCRIPTS/extra/
 
 ### Create user and home directory for base images that don't already define it
-RUN (groupadd -g 1000 kasm-user \
-    && useradd -M -u 1000 -g 1000 kasm-user \
-    && usermod -a -G kasm-user kasm-user) ; exit 0
-ENV HOME /home/kasm-user
+RUN (groupadd -g 1000 dooqod \
+    && useradd -M -u 1000 -g 1000 dooqod \
+    && usermod -a -G dooqod dooqod) ; exit 0
+ENV HOME /home/dooqod
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 

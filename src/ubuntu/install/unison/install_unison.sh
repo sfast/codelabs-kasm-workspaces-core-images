@@ -12,9 +12,9 @@ chown 1000:1000 /etc/unison/
 # FIXME Find and test Trash and other dirs
 # FIXME Test Browser only
 cat >/etc/unison/kasm-profile.prf <<EOL
-root = /home/kasm-user/
+root = /home/dooqod/
 root = /kasm_profile_sync/
-prefer = /home/kasm-user/
+prefer = /home/dooqod/
 
 
 # Desktop Trash Directories

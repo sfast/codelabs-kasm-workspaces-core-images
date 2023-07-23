@@ -149,8 +149,8 @@ ADD ./src/$DISTRO/xfce/.config/ $HOME/.config/
 RUN mkdir -p /usr/share/extra/backgrounds/
 RUN mkdir -p /usr/share/extra/icons/
 
-ADD /src/common/resources/images/bg_dooqod.jpeg  /usr/share/extra/backgrounds/bg_dooqod.jpeg
-ADD /src/common/resources/images/$BG_IMG  /usr/share/extra/backgrounds/bg_default.png
+ADD /src/common/resources/images/bg_dooqod.jpeg  /usr/share/backgrounds/bg_dooqod.jpeg
+ADD /src/common/resources/images/$BG_IMG  /usr/share/backgrounds/bg_default.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_ubuntu.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_default.png
 ADD /src/common/resources/images/icon_dooqod.png /usr/share/extra/icons/icon_dooqod.png
