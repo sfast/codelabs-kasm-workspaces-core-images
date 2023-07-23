@@ -152,6 +152,10 @@ RUN mkdir -p /usr/share/extra/icons/
 RUN bash $INST_SCRIPTS/xfce/customize_xfce_ui.sh
 RUN rm -rf $INST_SCRIPTS/xfce/
 
+### Setup Terminal on Desktop
+COPY ./src/ubuntu/install/terminal $INST_SCRIPTS/terminal/
+RUN bash $INST_SCRIPTS/terminal/install_terminal.sh  && rm -rf $INST_SCRIPTS/terminal/
+
 ADD /src/common/resources/images/$BG_IMG  /usr/share/backgrounds/bg_default.png
 ADD /src/common/resources/images/icon_ubuntu.png /usr/share/extra/icons/icon_default.png
 ### multistage

@@ -224,6 +224,11 @@ RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_co
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
 RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
 
+### Setup Terminal on Desktop
+COPY ./src/ubuntu/install/terminal $INST_SCRIPTS/terminal/
+RUN bash $INST_SCRIPTS/terminal/install_terminal.sh  && rm -rf $INST_SCRIPTS/terminal/
+
+
 # FROM dbuild1 AS dbuild2
 
 # NOTE::AVAR - changed user to dooqod
