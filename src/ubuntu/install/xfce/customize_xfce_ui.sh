@@ -9,5 +9,5 @@ echo "Customize Xfce4 UI components"
 if [[ "${DISTRO}" == @(oracle7|oracle8|oracle9) ]]; then
   wget -O /tmp/Adwaita-Dark.tar http://scripts.dooqod.com/v3/distrib/desktop/themes/Adwaita-Dark.tar
   tar -xf /tmp/Adwaita-Dark.tar -C /usr/share/themes
-  xfconf-query --channel xsettings --property /Net/ThemeName --set "Adwaita-Dark"
+  # xfconf-query --channel xsettings --property /Net/ThemeName --set "Adwaita-Dark"
 fi
