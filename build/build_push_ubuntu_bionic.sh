@@ -5,7 +5,7 @@ ORG_NAME=dooqod
 IMAGE_NAME=ospod-desktop-ubuntu-x86-64
 IMAGE_TAG=bionic
 BASE_IMAGE=docker.io/dooqod/ospod-ubuntu-x86-64:bionic
-DOCKERFILE="../dockerfile-kasm-core-ubuntu"
+DOCKERFILE=dockerfile-kasm-core-ubuntu
 
 podman build --no-cache --squash --force-rm --authfile="/home/admin/.docker/authfile.json" \
     -t ${ORG_NAME}/${IMAGE_NAME}:${IMAGE_TAG} \
