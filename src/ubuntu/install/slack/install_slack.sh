@@ -16,8 +16,7 @@ fi
 #echo "Determined slack latest version to be: ${version}"
 
 # slack latest does not run with --no-sandbox, so we have to hard code to an older version.
-version=4.12.2
-
+version=4.33.73
 
 # This path may not be accurate once arm64 support arrives. Specifically I don't know if it will still be under x64
 wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-desktop-${version}-${ARCH}.deb
